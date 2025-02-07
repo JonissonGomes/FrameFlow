@@ -23,36 +23,62 @@ document
       const response = await fetch("http://localhost:5000/upload", {
         method: "POST",
         body: formData,
+        mode: "cors",
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        document.getElementById(
+          "message"
+        ).innerText = `Erro: ${errorData.error}`;
+        return;
+      }
+
       const data = await response.json();
-      if (response.ok) {
+
+      if (data.zip_url) {
         document.getElementById("message").innerText =
           "Processamento concluído!";
-        document.getElementById(
-          "downloadLink"
-        ).innerHTML = `<a href="${data.zip_url}" download>Baixar Frames ZIP</a>`;
+
+        const downloadLink = document.getElementById("downloadLink");
+
+        downloadLink.classList.remove("hidden");
+
+        downloadLink.href = `http://localhost:5000${data.zip_url}`;
       } else {
-        document.getElementById("message").innerText = `Erro: ${data.error}`;
+        document.getElementById("message").innerText =
+          "Erro: URL do arquivo ZIP não encontrada.";
       }
     } catch (error) {
+      console.error("Erro ao enviar o vídeo:", error);
       document.getElementById("message").innerText = "Erro ao enviar o vídeo.";
     }
   });
 
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   const fileInput = document.getElementById("fileInput");
   const submitButton = document.querySelector("button[type='submit']");
+  const videoPreview = document.getElementById("videoPreview");
 
-  // Esconde o botão de envio inicialmente
   submitButton.style.display = "none";
+
+  const downloadLink = document.getElementById("downloadLink");
+  if (downloadLink) {
+    downloadLink.classList.add("hidden");
+  }
 
   fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
-      submitButton.style.display = "block"; // Mostra o botão se um arquivo for carregado
+      submitButton.style.display = "block";
+
+      const videoFile = fileInput.files[0];
+      const videoURL = URL.createObjectURL(videoFile);
+      videoPreview.src = videoURL;
+      videoPreview.classList.remove("hidden");
     } else {
-      submitButton.style.display = "none"; // Oculta o botão se nenhum arquivo estiver selecionado
+      submitButton.style.display = "none";
+
+      videoPreview.classList.add("hidden");
     }
   });
 });
-
