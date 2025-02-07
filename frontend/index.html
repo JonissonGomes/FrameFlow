@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload de Vídeo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Upload de Vídeo para Extração de Quadros</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="fileInput">Selecione o vídeo:</label>
+      <input type="file" name="file" id="fileInput" required />
+      
+      <label for="interval">Intervalo entre frames (segundos):</label>
+      <input
+        type="number"
+        name="interval"
+        id="intervalInput"
+        min="1"
+        value="20"
+        required
+      />
+
+      <label for="frameCount">Quantidade de frames:</label>
+      <input
+        type="number"
+        name="frameCount"
+        id="frameCountInput"
+        min="1"
+        value="10"
+        required
+      />
+      <video id="videoPreview" class="hidden" controls></video>
+      <button type="submit">Enviar Vídeo</button>
+    </form>
+    <div id="message"></div>
+    <a id="downloadLink" class="hidden download-button" download
+      >⬇️ Baixar Frames ZIP</a
+    >
+
+    <script src="app.js"></script>
+  </body>
+</html>
