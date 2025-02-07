@@ -27,3 +27,15 @@ def extract_frames(video_path, interval, frame_count):
     
     cap.release()
     return output_folder
+
+
+def create_zip(folder):
+    zip_filename = f"frames_{int(time.time())}.zip"
+    zip_filepath = os.path.join('./zips', zip_filename)
+    
+    with zipfile.ZipFile(zip_filepath, 'w') as zipf:
+        for root, dirs, files in os.walk(folder):
+            for file in files:
+                zipf.write(os.path.join(root, file), file)
+
+    return zip_filename
