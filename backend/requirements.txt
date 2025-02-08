@@ -1,4 +1,8 @@
 Flask
+Flask-Cors
+Flask-SQLAlchemy
+Flask-JWT-Extended
+flask_pymongo
 opencv-python
-werkzeug
-flask-cors
+Werkzeug
+python-dotenv
