@@ -55,9 +55,23 @@ document
   });
 
 document.addEventListener("DOMContentLoaded", function () {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    window.location.href = "http://localhost:8080/screens/login/login.html";
+    return;
+  }
+
   const fileInput = document.getElementById("fileInput");
   const submitButton = document.querySelector("button[type='submit']");
   const videoPreview = document.getElementById("videoPreview");
+  const logoutButton = document.getElementById("logoutButton");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+      localStorage.removeItem("access_token");
+      window.location.href = "http://localhost:8080/screens/login/login.html";
+    });
+  }
 
   submitButton.style.display = "none";
 
@@ -77,6 +91,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("refreshStatus").addEventListener("click", () => {
     fetchVideoStatus();
   });
+
+  const refreshVideoListButton = document.getElementById("refreshVideoList");
+  if (refreshVideoListButton) {
+    refreshVideoListButton.addEventListener("click", refreshVideoList);
+  }
+
+  fetchVideoList();
 });
 
 async function fetchVideoStatus() {
@@ -104,9 +125,7 @@ async function fetchVideoStatus() {
     }
 
     const videoStatus = await response.json();
-    document.getElementById(
-      "status"
-    ).innerText = `${videoStatus.status}`;
+    document.getElementById("status").innerText = `${videoStatus.status}`;
 
     if (videoStatus.status === "Concluído") {
       clearInterval(window.statusPollingInterval);
@@ -119,6 +138,91 @@ async function fetchVideoStatus() {
     document.getElementById("status").innerText = "Erro ao buscar status.";
   }
 }
+
+async function fetchVideoList() {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    console.error("Token não encontrado. Faça login primeiro.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/videos", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      document.getElementById("videoList").innerText = `Erro: ${
+        errorData.error || "Não foi possível carregar a lista."
+      }`;
+      return;
+    }
+
+    const videos = await response.json();
+    displayVideoList(videos);
+  } catch (error) {
+    console.error("Erro ao buscar a lista de vídeos:", error);
+    document.getElementById("videoList").innerText =
+      "Erro ao carregar a lista de vídeos.";
+  }
+}
+
+function displayVideoList(videos) {
+  const container = document.getElementById("videoList");
+  container.innerHTML = "";
+
+  if (videos.length === 0) {
+    container.innerText = "Nenhum vídeo encontrado.";
+    return;
+  }
+
+  videos.forEach((video) => {
+    const videoItem = document.createElement("div");
+    videoItem.className = "video-item";
+
+    let downloadButtonHTML = "";
+    if (video.zip_url && video.status === "Concluído") {
+      downloadButtonHTML = `<a class="download-button" href="http://localhost:5000${video.zip_url}" download>Baixar ZIP</a>`;
+    } else {
+      downloadButtonHTML = `<button class="download-button disabled" disabled>Baixar ZIP</button>`;
+    }
+
+    videoItem.innerHTML = `
+    <div class="container-video-list"> 
+      <p class="container-title">${video.filename}</p>
+      <div class="container-info">
+        <p class="container-label">Status: </p>
+        <p class="container-value">${video.status}</p>
+      </div>
+      <div class="container-info">
+        <p class="container-label">Criado em: </p>
+        <p class="container-value">${video.created_at}</p>
+      </div>
+      ${downloadButtonHTML}
+    </div>
+    `;
+    container.appendChild(videoItem);
+  });
+}
+
+function refreshVideoList() {
+  fetchVideoList();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const refreshVideoListButton = document.getElementById("refreshVideoList");
+  if (refreshVideoListButton) {
+    refreshVideoListButton.addEventListener("click", refreshVideoList);
+  }
+
+  fetchVideoList();
+});
 
 function startStatusPolling() {
   fetchVideoStatus();

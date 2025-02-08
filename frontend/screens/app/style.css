@@ -1,28 +1,89 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  text-align: center;
-  padding: 20px;
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4%;
+}
+
+.app-container {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  padding: 10px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
 }
 
 h1 {
   color: #333;
 }
 
+#logoutButton {
+  background-color: #d9534f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+#logoutButton:hover {
+  background-color: #c9302c;
+}
+
 form {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-align: left;
+  max-width: 400px;
+  width: 400px;
+  padding: 25px;
 }
 
 label {
-  display: block;
+  align-self: flex-start;
+  margin-bottom: 5px;
   font-weight: bold;
+  color: #555;
+}
+
+input {
+  width: 320px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submitButton {
   margin-top: 10px;
+  width: 200px;
+  padding: 12px;
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.divisor {
+  border: 1px solid #303030;
 }
 
 input[type="file"],
@@ -30,25 +91,8 @@ input[type="number"] {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #b9b9b9;
   border-radius: 5px;
-}
-
-button {
-  display: none; /* Escondido inicialmente */
-  width: 100%;
-  padding: 10px;
-  margin-top: 15px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #218838;
 }
 
 .hidden {
@@ -58,6 +102,7 @@ button:hover {
 #videoPreview {
   width: 100%;
   margin-top: 20px;
+  margin-bottom: 20px;
   border-radius: 8px;
 }
 
@@ -99,10 +144,51 @@ a {
 }
 
 .status-container {
-  margin-top: 20px;
-  background: #f9f9f9;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 10px;
   border-radius: 5px;
+}
+
+.status-container p {
+  font-size: 10px;
+}
+
+.container-video-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(202, 202, 202);
+  padding: 20px;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.container-title {
+  font-size: 18px;
+  font-weight: bold;
+  width: 20px;
+}
+
+.container-info {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.container-label {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.container-value {
+  margin: 0;
+  margin-left: 10px;
+  font-size: 14px;
+  font-style: italic;
 }
 
 .download-button {
@@ -114,4 +200,10 @@ a {
   padding: 10px;
   border-radius: 5px;
   text-decoration: none;
+}
+
+.download-button.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  border: none;
 }

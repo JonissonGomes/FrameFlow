@@ -7,42 +7,70 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Upload de Vídeo para Extração de Quadros</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label for="fileInput">Selecione o vídeo:</label>
-      <input type="file" name="file" id="fileInput" accept="video/*" required />
+    <div class="app-container">
+      <h1>Thumb Creator</h1>
 
-      <label for="interval">Intervalo entre frames (segundos):</label>
-      <input
-        type="number"
-        name="interval"
-        id="intervalInput"
-        min="1"
-        value="20"
-        required
-      />
+      <button id="logoutButton">Sair</button>
 
-      <label for="frameCount">Quantidade de frames:</label>
-      <input
-        type="number"
-        name="frameCount"
-        id="frameCountInput"
-        min="1"
-        value="10"
-        required
-      />
-      <video id="videoPreview" class="hidden player-video" controls></video>
-      <button type="submit" style="display: none">Enviar Vídeo</button>
-      <hr />
-      <div id="statusContainer" class="status-container hidden">
-        <h2>Status de processamento do Vídeo</h2>
-        <div id="status"></div>
-        <button id="refreshStatus">Atualizar Status</button>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <label for="fileInput">Selecione o vídeo:</label>
+        <input
+          type="file"
+          name="file"
+          id="fileInput"
+          accept="video/*"
+          required
+        />
+
+        <label for="interval">Intervalo entre frames (segundos):</label>
+        <input
+          type="number"
+          name="interval"
+          id="intervalInput"
+          min="1"
+          value="20"
+          required
+        />
+
+        <label for="frameCount">Quantidade de frames:</label>
+        <input
+          type="number"
+          name="frameCount"
+          id="frameCountInput"
+          min="1"
+          value="10"
+          required
+        />
+
+        <video id="videoPreview" class="hidden player-video" controls></video>
+        <button class="submitButton" type="submit" style="display: none">
+          Enviar Vídeo
+        </button>
+
+        <hr class="divisor" />
+
+        <div id="statusContainer" class="status-container hidden">
+          <div id="status"></div>
+        </div>
+        <a id="downloadLink" class="hidden download-button" download>
+          Baixar Frames
+        </a>
+      </form>
+
+      <hr class="divisor" />
+
+      <div id="videoListContainer">
+        <h2>Lista de últimos vídeos processados</h2>
+        <div id="videoList"></div>
       </div>
-      <a id="downloadLink" class="hidden download-button" download>
-        ⬇️ Baixar Frames
-      </a>
-    </form>
+    </div>
+
+    <script>
+      if (!localStorage.getItem("access_token")) {
+        window.location.href = "http://localhost:8080/screens/login/login.html";
+      }
+    </script>
+
     <script src="app.js"></script>
   </body>
 </html>
