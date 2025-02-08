@@ -24,7 +24,7 @@ document
       } else {
         document.getElementById(
           "loginMessage"
-        ).innerText = `Erro: ${data.error}`;
+        ).innerText = `Os dados informados estão incorretos.`;
       }
     } catch (error) {
       console.error("Erro ao realizar login:", error);
