@@ -11,10 +11,13 @@ WORKDIR /app
 # Copia os arquivos do projeto
 COPY requirements.txt .
 
+# Copia o arquivo .env para o container
+COPY .env .env
+
 # Instala as dependências do projeto
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o restante do código para o contêiner
+# Copia o restante do código para o container
 COPY . .
 
 # Expõe a porta da API
