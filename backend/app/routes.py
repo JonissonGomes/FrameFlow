@@ -44,3 +44,12 @@ def download_zip(zip_filename):
     else:
         current_app.logger.error(f"Arquivo {zip_filename} não encontrado.")
         return jsonify({"error": "Arquivo não encontrado"}), 404
+    
+@bp.route('/test-db-connection', methods=['GET'])
+@cross_origin()
+def test_db():
+    try:
+        result = current_app.mongo.db.command("ping")
+        return jsonify({"message": "Conexão com o MongoDB bem-sucedida", "result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
