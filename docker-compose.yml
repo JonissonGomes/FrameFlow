@@ -20,14 +20,6 @@ services:
     environment:
       - UPLOAD_FOLDER=./uploads
       - ZIP_FOLDER=./zips
-      # - SECRET_KEY=super-secret-key
-      # - JWT_SECRET_KEY=super-jwt-secret
-      # - MAIL_SERVER=smtp.gmail.com
-      # - MAIL_PORT=587
-      # - MAIL_USE_TLS=True
-      # - MAIL_USERNAME=seu_email@gmail.com
-      # - MAIL_PASSWORD=sua_senha
-      # - MAIL_DEFAULT_SENDER=seu_email@gmail.com
     depends_on:
       - mongo
 
@@ -37,3 +29,20 @@ services:
       - "27017:27017"
     volumes:
       - ./data/db:/data/db
+
+  celery_worker:
+    build:
+      context: ./backend
+    command: celery -A app.tasks worker --loglevel=info
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./backend/zips:/app/zips
+      - ./backend/zips:/app/uploads
+
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
