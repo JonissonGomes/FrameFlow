@@ -1,9 +1,10 @@
-from flask import Blueprint, request, send_from_directory, jsonify, current_app
+import datetime
+import os
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity
-import os
 from werkzeug.utils import secure_filename
-from .video_processing import extract_frames, create_zip
+from .tasks import process_video
 
 bp = Blueprint('routes', __name__)
 
@@ -15,25 +16,57 @@ def upload_video():
         return jsonify({"error": "No file part"}), 400
 
     file = request.files['file']
-
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join('./uploads', filename)
-        file.save(filepath)
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
 
+    try:
         frame_count = int(request.form['frame_count'])
         interval = int(request.form['interval'])
+    except (KeyError, ValueError):
+        return jsonify({"error": "Parâmetros inválidos"}), 400
 
-        extracted_frames_folder = extract_frames(filepath, interval, frame_count)
-        zip_file = create_zip(extracted_frames_folder)
+    user_id = get_jwt_identity()
 
+    video_data = {
+        "filename": filename,
+        "filepath": filepath,
+        "status": "Processando",
+        "created_at": datetime.datetime.utcnow(),
+        "user_id": user_id,
+        "zip_url": ""
+    }
+    video_doc = current_app.mongo.db.videos.insert_one(video_data)
+    video_id = str(video_doc.inserted_id)
+
+    task = process_video.delay(filepath, interval, frame_count, video_id)
+    
+    return jsonify({
+        "message": "Video processing started.",
+        "task_id": task.id,
+        "video_id": video_id
+    })
+    
+@bp.route('/video_status/<video_id>', methods=['GET'])
+@jwt_required()
+@cross_origin()
+def video_status(video_id):
+    from bson.objectid import ObjectId
+    mongo = current_app.mongo
+    video = mongo.db.videos.find_one({"_id": ObjectId(video_id)})
+    if video:
         return jsonify({
-            "message": "File processed successfully",
-            "zip_url": f"/download/{zip_file}"
+            "id": str(video["_id"]),
+            "filename": video["filename"],
+            "status": video["status"],
+            "zip_url": video.get("zip_url", ""),
+            "created_at": video["created_at"].strftime("%Y-%m-%d %H:%M:%S") if "created_at" in video else ""
         })
+    else:
+        return jsonify({"error": "Vídeo não encontrado"}), 404
 
 @bp.route('/download/<zip_filename>', methods=['GET'])
 @cross_origin()

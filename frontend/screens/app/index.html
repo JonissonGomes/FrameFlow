@@ -31,15 +31,18 @@
         value="10"
         required
       />
-      <video id="videoPreview" class="hidden" controls></video>
+      <video id="videoPreview" class="hidden player-video" controls></video>
       <button type="submit" style="display: none">Enviar Vídeo</button>
       <hr />
-      <div id="message" class="message"></div>
+      <div id="statusContainer" class="status-container hidden">
+        <h2>Status de processamento do Vídeo</h2>
+        <div id="status"></div>
+        <button id="refreshStatus">Atualizar Status</button>
+      </div>
       <a id="downloadLink" class="hidden download-button" download>
         ⬇️ Baixar Frames
       </a>
     </form>
-
     <script src="app.js"></script>
   </body>
 </html>

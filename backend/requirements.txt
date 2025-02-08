@@ -6,3 +6,5 @@ flask_pymongo
 opencv-python
 Werkzeug
 python-dotenv
+Celery
+redis

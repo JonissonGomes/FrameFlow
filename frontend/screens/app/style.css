@@ -83,9 +83,35 @@ a {
   color: white;
 }
 
+.player-video {
+  width: 300px;
+}
+
 .message {
   margin-top: 10px;
   margin-bottom: 10px;
   text-align: center;
   font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+.status-container {
+  margin-top: 20px;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.download-button {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  text-decoration: none;
 }
