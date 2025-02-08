@@ -1,77 +1,97 @@
 /* Reset básico */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Estilos para o body */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  /* Centraliza o conteúdo da página */
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  /* Estiliza o formulário */
-  form {
-    background-color: #fff;
-    max-width: 400px;
-    width: 100%;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Estiliza os labels */
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-  }
-  
-  /* Estiliza os inputs */
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  /* Estiliza o botão */
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #28a745;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #218838;
-  }
-  
-  /* Estilo para a mensagem */
-  .message {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-    color: #333;
-  }
-  
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+}
+
+.login-container {
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+  padding: 20px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  width: 400px;
+  padding: 25px;
+}
+
+label {
+  align-self: flex-start;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+input {
+  width: 320px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submitButton {
+  margin-top: 10px;
+  width: 200px;
+  padding: 12px;
+  background-color: #28a745;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.redirectRegisterButton {
+  width: 200px;
+  padding: 12px;
+  background-color: none;
+  border: none;
+  color: rgb(17, 17, 17);
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.message {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: rgb(150, 2, 2);
+}
