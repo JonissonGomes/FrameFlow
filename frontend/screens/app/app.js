@@ -17,18 +17,13 @@ document
     formData.append("interval", interval);
     formData.append("frame_count", frameCount);
 
-    // Recupera o token JWT armazenado no localStorage
-    const accessToken = localStorage.getItem("access_token");
-
-    document.getElementById("message").innerText = "Enviando vídeo...";
-
     try {
       const response = await fetch("http://localhost:5000/upload", {
         method: "POST",
         body: formData,
         mode: "cors",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
       });
 
@@ -42,15 +37,16 @@ document
 
       const data = await response.json();
 
-      if (data.zip_url) {
-        document.getElementById("message").innerText =
-          "Processamento concluído!";
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.classList.remove("hidden");
-        downloadLink.href = `http://localhost:5000${data.zip_url}`;
+      if (data.video_id) {
+        window.currentVideoId = data.video_id;
+
+        const statusContainer = document.getElementById("statusContainer");
+        statusContainer.classList.remove("hidden");
+
+        startStatusPolling();
       } else {
         document.getElementById("message").innerText =
-          "Erro: URL do arquivo ZIP não encontrada.";
+          "Erro: video_id não retornado.";
       }
     } catch (error) {
       console.error("Erro ao enviar o vídeo:", error);
@@ -64,10 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoPreview = document.getElementById("videoPreview");
 
   submitButton.style.display = "none";
-  const downloadLink = document.getElementById("downloadLink");
-  if (downloadLink) {
-    downloadLink.classList.add("hidden");
-  }
 
   fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
@@ -81,4 +73,54 @@ document.addEventListener("DOMContentLoaded", function () {
       videoPreview.classList.add("hidden");
     }
   });
+
+  document.getElementById("refreshStatus").addEventListener("click", () => {
+    fetchVideoStatus();
+  });
 });
+
+async function fetchVideoStatus() {
+  if (!window.currentVideoId) return;
+
+  try {
+    const response = await fetch(
+      `http://localhost:5000/video_status/${window.currentVideoId}`,
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log("Erro retornado:", errorData);
+      document.getElementById("status").innerText = `Erro: ${
+        errorData.error || "Token inválido ou expirado"
+      }`;
+      return;
+    }
+
+    const videoStatus = await response.json();
+    document.getElementById(
+      "status"
+    ).innerText = `${videoStatus.status}`;
+
+    if (videoStatus.status === "Concluído") {
+      clearInterval(window.statusPollingInterval);
+      const downloadLink = document.getElementById("downloadLink");
+      downloadLink.classList.remove("hidden");
+      downloadLink.href = `http://localhost:5000${videoStatus.zip_url}`;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar status:", error);
+    document.getElementById("status").innerText = "Erro ao buscar status.";
+  }
+}
+
+function startStatusPolling() {
+  fetchVideoStatus();
+  window.statusPollingInterval = setInterval(fetchVideoStatus, 5000);
+}
