@@ -17,3 +17,24 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/zips:/app/zips
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/frameflow
+      - UPLOAD_FOLDER=./uploads
+      - ZIP_FOLDER=./zips
+      # - SECRET_KEY=super-secret-key
+      # - JWT_SECRET_KEY=super-jwt-secret
+      # - MAIL_SERVER=smtp.gmail.com
+      # - MAIL_PORT=587
+      # - MAIL_USE_TLS=True
+      # - MAIL_USERNAME=seu_email@gmail.com
+      # - MAIL_PASSWORD=sua_senha
+      # - MAIL_DEFAULT_SENDER=seu_email@gmail.com
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
