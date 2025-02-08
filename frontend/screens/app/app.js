@@ -17,6 +17,9 @@ document
     formData.append("interval", interval);
     formData.append("frame_count", frameCount);
 
+    // Recupera o token JWT armazenado no localStorage
+    const accessToken = localStorage.getItem("access_token");
+
     document.getElementById("message").innerText = "Enviando vídeo...";
 
     try {
@@ -24,6 +27,9 @@ document
         method: "POST",
         body: formData,
         mode: "cors",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) {
@@ -39,11 +45,8 @@ document
       if (data.zip_url) {
         document.getElementById("message").innerText =
           "Processamento concluído!";
-
         const downloadLink = document.getElementById("downloadLink");
-
         downloadLink.classList.remove("hidden");
-
         downloadLink.href = `http://localhost:5000${data.zip_url}`;
       } else {
         document.getElementById("message").innerText =
@@ -61,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const videoPreview = document.getElementById("videoPreview");
 
   submitButton.style.display = "none";
-
   const downloadLink = document.getElementById("downloadLink");
   if (downloadLink) {
     downloadLink.classList.add("hidden");
@@ -70,14 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
   fileInput.addEventListener("change", function () {
     if (fileInput.files.length > 0) {
       submitButton.style.display = "block";
-
       const videoFile = fileInput.files[0];
       const videoURL = URL.createObjectURL(videoFile);
       videoPreview.src = videoURL;
       videoPreview.classList.remove("hidden");
     } else {
       submitButton.style.display = "none";
-
       videoPreview.classList.add("hidden");
     }
   });
