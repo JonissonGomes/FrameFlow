@@ -68,6 +68,25 @@ def video_status(video_id):
     else:
         return jsonify({"error": "Vídeo não encontrado"}), 404
 
+@bp.route('/videos', methods=['GET'])
+@jwt_required()
+@cross_origin()
+def list_videos():
+    user_id = get_jwt_identity()
+    mongo = current_app.mongo
+    videos_cursor = mongo.db.videos.find({"user_id": user_id})
+    videos = []
+    for video in videos_cursor:
+        videos.append({
+            "id": str(video["_id"]),
+            "filename": video["filename"],
+            "status": video["status"],
+            "zip_url": video.get("zip_url", ""),
+            "created_at": video["created_at"].strftime("%Y-%m-%d %H:%M:%S") if "created_at" in video else ""
+        })
+    return jsonify(videos)
+
+
 @bp.route('/download/<zip_filename>', methods=['GET'])
 @cross_origin()
 def download_zip(zip_filename):
