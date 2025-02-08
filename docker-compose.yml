@@ -18,7 +18,6 @@ services:
       - ./backend/uploads:/app/uploads
       - ./backend/zips:/app/zips
     environment:
-      - MONGO_URI=mongodb://mongo:27017/frameflow
       - UPLOAD_FOLDER=./uploads
       - ZIP_FOLDER=./zips
       # - SECRET_KEY=super-secret-key

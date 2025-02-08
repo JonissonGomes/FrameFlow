@@ -17,5 +17,7 @@ def create_app():
     # Importando as rotas
     from .routes import bp as routes_bp
     app.register_blueprint(routes_bp)
-
+    from .auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    
     return app
