@@ -55,9 +55,23 @@ document
   });
 
 document.addEventListener("DOMContentLoaded", function () {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    window.location.href = "http://localhost:8080/screens/login/login.html";
+    return;
+  }
+
   const fileInput = document.getElementById("fileInput");
   const submitButton = document.querySelector("button[type='submit']");
   const videoPreview = document.getElementById("videoPreview");
+  const logoutButton = document.getElementById("logoutButton");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function () {
+      localStorage.removeItem("access_token");
+      window.location.href = "http://localhost:8080/screens/login/login.html";
+    });
+  }
 
   submitButton.style.display = "none";
 
@@ -77,6 +91,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("refreshStatus").addEventListener("click", () => {
     fetchVideoStatus();
   });
+
+  const refreshVideoListButton = document.getElementById("refreshVideoList");
+  if (refreshVideoListButton) {
+    refreshVideoListButton.addEventListener("click", refreshVideoList);
+  }
+
+  fetchVideoList();
 });
 
 async function fetchVideoStatus() {
@@ -104,9 +125,7 @@ async function fetchVideoStatus() {
     }
 
     const videoStatus = await response.json();
-    document.getElementById(
-      "status"
-    ).innerText = `${videoStatus.status}`;
+    document.getElementById("status").innerText = `${videoStatus.status}`;
 
     if (videoStatus.status === "Concluído") {
       clearInterval(window.statusPollingInterval);
