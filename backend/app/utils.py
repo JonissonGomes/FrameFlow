@@ -15,7 +15,7 @@ def send_email(recipient, video_filename, status, zip_url=None):
     """
     
     if status == "Concluído" and zip_url:
-        message_body += f"Você pode baixar os arquivos extraídos aqui clicando no link abaixo \n\n {zip_url}\n""
+        message_body += f"Você pode baixar os arquivos extraídos aqui clicando no link abaixo \n\n {zip_url}\n"
 
     msg = Message(subject, sender=current_app.config['MAIL_DEFAULT_SENDER'], recipients=[recipient])
     msg.body = message_body

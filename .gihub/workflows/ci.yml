@@ -1,0 +1,27 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        pip install -r backend/requirements.txt
+        pip install pytest
+    - name: Run tests
+      working-directory: backend
+      run: pytest --maxfail=1 --disable-warnings -q
