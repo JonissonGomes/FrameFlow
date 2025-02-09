@@ -3,10 +3,15 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from .config import Config
+from flask_mail import Mail
+
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    mail.init_app(app)
     
     CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})
     
