@@ -5,6 +5,7 @@ from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from .tasks import process_video
+from bson.objectid import ObjectId
 
 bp = Blueprint('routes', __name__)
 
@@ -31,6 +32,12 @@ def upload_video():
         return jsonify({"error": "Parâmetros inválidos"}), 400
 
     user_id = get_jwt_identity()
+    user = current_app.mongo.db.users.find_one({"_id": ObjectId(user_id)})
+
+    if not user or "email" not in user:
+        return jsonify({"error": "Usuário sem email cadastrado"}), 400
+
+    user_email = user["email"]
     created_at = datetime.now(BRT)
 
     video_data = {
@@ -44,7 +51,7 @@ def upload_video():
     video_doc = current_app.mongo.db.videos.insert_one(video_data)
     video_id = str(video_doc.inserted_id)
 
-    task = process_video.delay(filepath, interval, video_id)
+    task = process_video.delay(filepath, interval, video_id, user_email)
     
     return jsonify({
         "message": "Video processing started.",
