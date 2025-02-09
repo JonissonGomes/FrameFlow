@@ -9,3 +9,5 @@ Werkzeug
 python-dotenv
 Celery
 redis
+pytest
+pytest-flask
