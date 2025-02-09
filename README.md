@@ -41,6 +41,20 @@ O **FrameFlow** é uma aplicação completa para processamento de vídeos, que p
 
 ## Arquitetura
 
+```mermaid
+flowchart LR
+    A[Usuario] -->|Acessa via Browser| B[Frontend Web]
+    B -->|Requisicoes HTTP| C[API Backend]
+    C -->|Armazena e consulta dados| D[MongoDB]
+    C -->|Enfileira tarefas| E[Celery Task Queue]
+    E -->|Broker: Redis| F[Redis]
+    E -->|Processa videos| G[Celery Worker]
+    G -->|Extrai frames e cria ZIP| H[OpenCV Video Processing]
+    G -->|Atualiza status no DB| D
+    G -->|Envia notificacao via Flask-Mail| I[Gmail SMTP]
+    I -->|Confirma envio| A
+```
+
 - **Frontend:**  
   - Interface web construída com HTML, CSS e JavaScript.
   - Responsiva e integrada com o backend via API REST.
