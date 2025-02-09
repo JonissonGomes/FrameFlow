@@ -17,9 +17,6 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/zips:/app/zips
-    environment:
-      - UPLOAD_FOLDER=./uploads
-      - ZIP_FOLDER=./zips
     depends_on:
       - mongo
 
@@ -39,7 +36,7 @@ services:
       - backend
     volumes:
       - ./backend/zips:/app/zips
-      - ./backend/zips:/app/uploads
+      - ./backend/uploads:/app/uploads
 
 
   redis:
