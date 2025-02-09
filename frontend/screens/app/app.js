@@ -6,7 +6,6 @@ document
     const formData = new FormData();
     const fileInput = document.getElementById("fileInput");
     const interval = document.getElementById("intervalInput").value;
-    const frameCount = document.getElementById("frameCountInput").value;
 
     if (!fileInput.files.length) {
       alert("Por favor, selecione um arquivo de vídeo.");
@@ -15,7 +14,6 @@ document
 
     formData.append("file", fileInput.files[0]);
     formData.append("interval", interval);
-    formData.append("frame_count", frameCount);
 
     try {
       const response = await fetch("http://localhost:5000/upload", {
@@ -130,7 +128,6 @@ async function fetchVideoStatus() {
     if (videoStatus.status === "Concluído") {
       clearInterval(window.statusPollingInterval);
       const downloadLink = document.getElementById("downloadLink");
-      downloadLink.classList.remove("hidden");
       downloadLink.href = `http://localhost:5000${videoStatus.zip_url}`;
     }
   } catch (error) {
@@ -166,11 +163,41 @@ async function fetchVideoList() {
 
     const videos = await response.json();
     displayVideoList(videos);
+
+    const processingVideos = videos.some(
+      (video) => video.status === "Processando"
+    );
+
+    if (processingVideos) {
+      if (!window.videoListInterval) {
+        window.videoListInterval = setInterval(fetchVideoList, 5000);
+      }
+    } else {
+      if (window.videoListInterval) {
+        clearInterval(window.videoListInterval);
+        window.videoListInterval = null;
+      }
+    }
   } catch (error) {
     console.error("Erro ao buscar a lista de vídeos:", error);
     document.getElementById("videoList").innerText =
       "Erro ao carregar a lista de vídeos.";
   }
+}
+
+function formatDate(isoDate) {
+  if (!isoDate) return "Data inválida";
+  
+  const dateObj = new Date(isoDate);
+  
+  const options = { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" };
+  const time = dateObj.toLocaleTimeString("pt-BR", options).slice(0, 5);
+  
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const year = dateObj.getFullYear();
+
+  return `${time} de ${day}/${month}/${year}`;
 }
 
 function displayVideoList(videos) {
@@ -188,25 +215,40 @@ function displayVideoList(videos) {
 
     let downloadButtonHTML = "";
     if (video.zip_url && video.status === "Concluído") {
-      downloadButtonHTML = `<a class="download-button" href="http://localhost:5000${video.zip_url}" download>Baixar ZIP</a>`;
-    } else {
-      downloadButtonHTML = `<button class="download-button disabled" disabled>Baixar ZIP</button>`;
+      const zipFileName = video.zip_url.split("/").pop();
+      downloadButtonHTML = `<a class="download-button" href="http://localhost:5000/download/${zipFileName}" download>Baixar ZIP</a>`;
     }
 
     videoItem.innerHTML = `
     <div class="container-video-list"> 
       <p class="container-title">${video.filename}</p>
+  
       <div class="container-info">
         <p class="container-label">Status: </p>
         <p class="container-value">${video.status}</p>
       </div>
+  
       <div class="container-info">
-        <p class="container-label">Criado em: </p>
-        <p class="container-value">${video.created_at}</p>
+        <p class="container-label">Horário de processamento: </p>
+        <p class="container-value">${formatDate(video.created_at)}</p>
       </div>
+  
+      <div class="container-info">
+        <p class="container-label">FPS do Vídeo: </p>
+        <p class="container-value">${video.fps ? video.fps : "0"}</p>
+      </div>
+  
+      <div class="container-info">
+        <p class="container-label">Frames Extraídos: </p>
+        <p class="container-value">${
+          video.frames_extracted ? video.frames_extracted : "0"
+        }</p>
+      </div>
+  
       ${downloadButtonHTML}
     </div>
-    `;
+  `;
+
     container.appendChild(videoItem);
   });
 }
@@ -225,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function startStatusPolling() {
+  fetchVideoList();
   fetchVideoStatus();
   window.statusPollingInterval = setInterval(fetchVideoStatus, 5000);
 }
