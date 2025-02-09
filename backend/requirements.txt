@@ -2,6 +2,7 @@ Flask
 Flask-Cors
 Flask-SQLAlchemy
 Flask-JWT-Extended
+Flask-Mail
 flask_pymongo
 opencv-python
 Werkzeug
