@@ -89,11 +89,11 @@ O **FrameFlow** é uma aplicação completa para processamento de vídeos, que p
 
 ## Pré-requisitos
 
-- **Docker:*
+- **Docker:**
 Certifique-se de ter o Docker instalado na sua máquina.
 Instruções de instalação do Docker
 
-- **Git:*
+- **Git:**
 Para clonar e versionar o código.
 
 ## Como Rodar o Projeto com Docker
@@ -108,7 +108,6 @@ cd FrameFlow
 ### Construa os containers do Docker:
 
 ```bash
-Copiar
 docker-compose build
 ```
 
@@ -119,6 +118,7 @@ docker-compose up
 ```
 
 > O backend estará disponível em: http://localhost:5000
+
 > O frontend estará disponível em: http://localhost:8080
 
 ## Configuração de Ambiente
@@ -127,6 +127,7 @@ As configurações sensíveis, como credenciais do MongoDB, do Gmail e do broker
 > env
 
 ## Exemplo de .env
+```env
 MONGO_URI=
 UPLOAD_FOLDER=./uploads
 ZIP_FOLDER=./zips
@@ -141,6 +142,7 @@ MAIL_USE_TLS=True
 MAIL_DEFAULT_SENDER=seuemail@gmail.com
 
 CELERY_BROKER_URL=redis://redis:6379/0
+```
 
 # Como Usar a Interface Web
 Acesse a interface web:
