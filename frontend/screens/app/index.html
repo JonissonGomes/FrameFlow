@@ -32,35 +32,23 @@
           required
         />
 
-        <label for="frameCount">Quantidade de frames:</label>
-        <input
-          type="number"
-          name="frameCount"
-          id="frameCountInput"
-          min="1"
-          value="10"
-          required
-        />
-
         <video id="videoPreview" class="hidden player-video" controls></video>
         <button class="submitButton" type="submit" style="display: none">
           Enviar Vídeo
         </button>
 
         <hr class="divisor" />
-
         <div id="statusContainer" class="status-container hidden">
           <div id="status"></div>
         </div>
         <a id="downloadLink" class="hidden download-button" download>
-          Baixar Frames
         </a>
       </form>
 
       <hr class="divisor" />
 
       <div id="videoListContainer">
-        <h2>Lista de últimos vídeos processados</h2>
+        <h2 class="title-video-list">Lista de últimos vídeos processados</h2>
         <div id="videoList"></div>
       </div>
     </div>
